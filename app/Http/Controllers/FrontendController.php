@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CheckoutRequest;
 use App\Models\TransactionItem;
+use Illuminate\Support\Facades\Log;
 
 class FrontendController extends Controller
 {
@@ -102,6 +103,8 @@ class FrontendController extends Controller
                 'finish' => route('checkout-success') // Redirect ke halaman sukses
             ]
         );
+
+        Log::info('Sending transaction to Midtrans', $midtrans);
 
         try {
             // Ambil halaman payment midtrans
