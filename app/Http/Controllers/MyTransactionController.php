@@ -18,6 +18,10 @@ class MyTransactionController extends Controller
      */
     public function index()
     {
+        if (auth()->user()->roles === 'ADMIN') {
+            abort(403, 'Admin tidak diperbolehkan mengakses transaksi pribadi.');
+        }
+
         if (request()->ajax()) {
             $query = Transaction::with(['user'])->where('users_id', Auth::user()->id);
 

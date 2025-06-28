@@ -8,7 +8,11 @@
                     <a href="{{ route('dashboard.index') }}">
                         <x-jet-application-mark class="block h-9 w-auto" />
                     </a>
+                    {{-- <a href="{{ Auth::user()->roles === 'ADMIN' ? route('dashboard.product.index') : route('dashboard.index') }}">
+                        <x-jet-application-mark class="block h-9 w-auto" />
+                    </a> --}}
                 </div>
+                
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
@@ -30,9 +34,11 @@
                         </x-jet-nav-link>
                     @endif
 
-                    <x-jet-nav-link href="{{ route('dashboard.my-transaction.index') }}" :active="request()->routeIs('dashboard.my-transaction.index')">
-                        {{ __('My Transaction') }}
-                    </x-jet-nav-link>
+                    @if(Auth::user()->roles != 'ADMIN')
+                         <x-jet-responsive-nav-link href="{{ route('dashboard.my-transaction.index') }}" :active="request()->routeIs('dashboard.my-transaction.index')">
+                            {{ __('My Transaction') }}
+                        </x-jet-responsive-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -170,7 +176,13 @@
                 <x-jet-responsive-nav-link href="{{ route('dashboard.user.index') }}" :active="request()->routeIs('dashboard.user.index')">
                     {{ __('User') }}
                 </x-jet-responsive-nav-link>
-                <x-jet-responsive-nav-link href="{{ route('dashboard.my-transaction.index') }}" :active="request()->routeIs('dashboard.my-transaction.index')">
+                {{-- <x-jet-responsive-nav-link href="{{ route('dashboard.my-transaction.index') }}" :active="request()->routeIs('dashboard.my-transaction.index')">
+                    {{ __('My Transaction') }}
+                </x-jet-responsive-nav-link> --}}
+            @endif
+
+            @if(Auth::user()->roles != 'ADMIN')
+                 <x-jet-responsive-nav-link href="{{ route('dashboard.my-transaction.index') }}" :active="request()->routeIs('dashboard.my-transaction.index')">
                     {{ __('My Transaction') }}
                 </x-jet-responsive-nav-link>
             @endif
