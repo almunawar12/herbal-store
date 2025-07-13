@@ -17,24 +17,24 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        if(request()->ajax()) {
+        if (request()->ajax()) {
             $query = Transaction::query();
 
             return DataTables::of($query)
-                ->addcolumn('action', function($item){
+                ->addcolumn('action', function ($item) {
                     return '
-                    <a href="'. route('dashboard.transaction.show', $item->id) .'" class="inline-block border border-blue-700 bg-green-500 text-white rounded-md px-2 py-1 m-1
+                    <a href="' . route('dashboard.transaction.show', $item->id) . '" class="inline-block border border-blue-700 bg-green-500 text-white rounded-md px-2 py-1 m-1
                         transition duration-500 ease select-none hover:bg-blue-800 focus:outline-none focus:shadow-outline">
                         Show
                     </a> 
-                    <a href="'. route('dashboard.transaction.edit', $item->id) .'" class="inline-block border border-gray-700 bg-gray-500 text-white rounded-md px-2 py-1 m-1
+                    <a href="' . route('dashboard.transaction.edit', $item->id) . '" class="inline-block border border-gray-700 bg-gray-500 text-white rounded-md px-2 py-1 m-1
                         transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline">
                         Edit
                     </a>
                     ';
                 })
-                
-                ->editcolumn('total_price', function($item){
+
+                ->editcolumn('total_price', function ($item) {
                     return number_format($item->total_price);
                 })
                 ->rawColumns(['action'])
@@ -72,12 +72,11 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        if(request()->ajax()) 
-        {
+        if (request()->ajax()) {
             $query = TransactionItem::with(['product'])->WHERE('transactions_id', $transaction->id);
 
             return DataTables::of($query)
-                ->editcolumn('product.price', function($item){
+                ->editcolumn('product.price', function ($item) {
                     return number_format($item->product->price);
                 })
                 ->rawColumns(['action'])

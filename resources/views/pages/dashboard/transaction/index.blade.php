@@ -25,7 +25,20 @@
                         name: 'action',
                         orderable: false,
                         searchable: false,
-                        width: '25%'
+                        width: '25%',
+                        render: function(data, type, row) {
+                            var waNumber = row.phone.replace(/^0/, '62'); 
+                            var waMessage = `Halo ${row.name}, kami menghubungi terkait pesanan Anda.`;
+                            var waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+
+                            return `
+                                <a href="${waUrl}" target="_blank" class="inline-flex items-center px-3 py-1 bg-green-500 text-white text-sm font-medium rounded hover:bg-green-600 mr-2">
+                                    WhatsApp
+                                </a>
+                                ${data}
+                            `;
+                        }
+
                     }
                 ]
             })
