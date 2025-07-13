@@ -8,6 +8,7 @@ use App\Http\Controllers\MidtransCallbackController;
 use App\Http\Controllers\MyTransactionController;
 use App\Http\Controllers\ProductGalleryController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TransactionReportController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -59,6 +60,8 @@ Route::middleware(['auth:sanctum', 'verified'])->name('dashboard.')->prefix('das
             'update',
             'destroy'
         ]);
+        Route::get('reports', [TransactionReportController::class, 'index'])->name('reports.index');
+        Route::get('reports/export-pdf', [TransactionReportController::class, 'exportPdf'])->name('reports.export-pdf');
     });
 });
 
