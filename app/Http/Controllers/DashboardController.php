@@ -19,8 +19,12 @@ class DashboardController extends Controller
             $transactionCount = Transaction::count();
             $totalTransactionAmount = Transaction::sum('total_price');
 
+<<<<<<< HEAD
             $salesChart = DB::table('transactions')
                 ->selectRaw("MONTH(created_at) as month_num, DATE_FORMAT(MIN(created_at), '%M') as month, SUM(total_price) as total")
+=======
+            $salesChart = Transaction::selectRaw("DATE_FORMAT(MIN(created_at), '%M') as month, SUM(total_price) as total")
+>>>>>>> test
                 ->whereYear('created_at', now()->year)
                 ->groupByRaw("MONTH(created_at)")
                 ->orderBy('month_num')

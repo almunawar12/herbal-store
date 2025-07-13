@@ -108,5 +108,9 @@
 
         <!--- Tambahkan setelah livewireScripts --->
         {{ $script ?? '' }}
+
+        @if (Auth::user() && Auth::user()->role === 'USER')
+            @include('components.whatsapp-bubble')
+        @endif
     </body>
 </html>

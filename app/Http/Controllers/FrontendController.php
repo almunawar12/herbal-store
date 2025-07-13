@@ -65,9 +65,13 @@ class FrontendController extends Controller
         // Add to Transaction data
         $data['users_id'] = Auth::user()->id;
         $data['total_price'] = $carts->sum('product.price');
+        $data['code'] = 'LX-' . time();
 
         // Create Transaction
         $transaction = Transaction::create($data);
+
+        $transaction->code = 'LX-' . $transaction->id . '-' . time();
+        $transaction->save();
 
         // Create Transaction item
         foreach ($carts as $cart) {
@@ -90,12 +94,13 @@ class FrontendController extends Controller
         // Setup midtrans variable
         $midtrans = array(
             'transaction_details' => array(
-                'order_id' =>  'LX-' . $transaction->id . '-' . time(),
+                'order_id' => $transaction->code,
                 'gross_amount' => (int) $transaction->total_price,
             ),
             'customer_details' => array(
                 'first_name'    => $transaction->name,
-                'email'         => $transaction->email
+                'email'         => $transaction->email,
+                'order_id' => $transaction->code,
             ),
             'enabled_payments' => array('gopay', 'bank_transfer'),
             'vtweb' => [],
@@ -104,7 +109,7 @@ class FrontendController extends Controller
             ]
         );
 
-        Log::info('Sending transaction to Midtrans', $midtrans);
+        // Log::info('Sending transaction to Midtrans', $midtrans);
 
         try {
             // Ambil halaman payment midtrans
