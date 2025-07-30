@@ -119,27 +119,38 @@
 
                 <div class="flex flex-col mb-4">
                   <label for="complete-name" class="text-sm mb-2"
-                    >Complete Name</label
-                  >
+                    >Complete Name
+                    @if(Auth::check())
+                      <span class="text-green-600 text-xs">(Auto-filled from your account)</span>
+                    @endif
+                  </label>
                   <input
                     data-input
                     name="name"
                     type="text"
                     id="complete-name"
-                    class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
+                    class="border-gray-200 border rounded-lg px-4 py-2 text-sm focus:border-blue-200 focus:outline-none {{ Auth::check() ? 'bg-gray-50 cursor-not-allowed' : 'bg-white' }}"
                     placeholder="Input your name"
+                    value="{{ Auth::check() ? Auth::user()->name : '' }}"
+                    {{ Auth::check() ? 'readonly' : '' }}
                   />
                 </div>
 
                 <div class="flex flex-col mb-4">
-                  <label for="email" class="text-sm mb-2">Email Address</label>
+                  <label for="email" class="text-sm mb-2">Email Address
+                    @if(Auth::check())
+                      <span class="text-green-600 text-xs">(Auto-filled from your account)</span>
+                    @endif
+                  </label>
                   <input
                     data-input
                     name="email"
                     type="email"
                     id="email"
-                    class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
+                    class="border-gray-200 border rounded-lg px-4 py-2 text-sm focus:border-blue-200 focus:outline-none {{ Auth::check() ? 'bg-gray-50 cursor-not-allowed' : 'bg-white' }}"
                     placeholder="Input your email address"
+                    value="{{ Auth::check() ? Auth::user()->email : '' }}"
+                    {{ Auth::check() ? 'readonly' : '' }}
                   />
                 </div>
 
@@ -269,8 +280,8 @@
                 <div class="text-center">
                   <button
                     type="submit"
-                    disabled
-                    class="bg-pink-400 text-black hover:bg-black hover:text-pink-400 focus:outline-none w-full py-3 rounded-full text-lg focus:text-black transition-all duration-200 px-6"
+                    id="checkout-btn"
+                    class="bg-pink-400 text-black hover:bg-black hover:text-pink-400 focus:outline-none w-full py-3 rounded-full text-lg focus:text-black transition-all duration-200 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Checkout Now
                   </button>
@@ -281,5 +292,119 @@
         </div>
       </div>
     </section>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const form = document.querySelector('form[action="{{ route('checkout') }}"]');
+        const inputs = form.querySelectorAll('input[data-input]');
+        const courierButtons = form.querySelectorAll('button[data-name="courier"]');
+        const paymentButtons = form.querySelectorAll('button[data-name="payment"]');
+        
+        let selectedCourier = '';
+        let selectedPayment = '';
+
+        // Function to check form validity
+        function checkFormValidity() {
+          let allFieldsFilled = true;
+          
+          // Check all required inputs
+          inputs.forEach(input => {
+            if (input.value.trim() === '') {
+              allFieldsFilled = false;
+            }
+          });
+          
+          // Check if courier and payment are selected
+          if (!selectedCourier || !selectedPayment) {
+            allFieldsFilled = false;
+          }
+          
+          // Enable/disable checkout button
+          checkoutBtn.disabled = !allFieldsFilled;
+          
+          if (allFieldsFilled) {
+            checkoutBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          } else {
+            checkoutBtn.classList.add('opacity-50', 'cursor-not-allowed');
+          }
+        }
+
+        // Add event listeners to all inputs
+        inputs.forEach(input => {
+          input.addEventListener('input', checkFormValidity);
+          input.addEventListener('change', checkFormValidity);
+        });
+
+        // Handle courier selection
+        courierButtons.forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all courier buttons
+            courierButtons.forEach(btn => {
+              btn.classList.remove('border-red-500', 'bg-red-50');
+              btn.classList.add('border-gray-200');
+            });
+            
+            // Add active class to clicked button
+            this.classList.remove('border-gray-200');
+            this.classList.add('border-red-500', 'bg-red-50');
+            
+            selectedCourier = this.getAttribute('data-value');
+            
+            // Add hidden input for courier
+            let existingCourierInput = form.querySelector('input[name="courier"]');
+            if (existingCourierInput) {
+              existingCourierInput.remove();
+            }
+            
+            const courierInput = document.createElement('input');
+            courierInput.type = 'hidden';
+            courierInput.name = 'courier';
+            courierInput.value = selectedCourier;
+            form.appendChild(courierInput);
+            
+            checkFormValidity();
+          });
+        });
+
+        // Handle payment selection
+        paymentButtons.forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all payment buttons
+            paymentButtons.forEach(btn => {
+              btn.classList.remove('border-red-500', 'bg-red-50');
+              btn.classList.add('border-gray-200');
+            });
+            
+            // Add active class to clicked button
+            this.classList.remove('border-gray-200');
+            this.classList.add('border-red-500', 'bg-red-50');
+            
+            selectedPayment = this.getAttribute('data-value');
+            
+            // Add hidden input for payment
+            let existingPaymentInput = form.querySelector('input[name="payment"]');
+            if (existingPaymentInput) {
+              existingPaymentInput.remove();
+            }
+            
+            const paymentInput = document.createElement('input');
+            paymentInput.type = 'hidden';
+            paymentInput.name = 'payment';
+            paymentInput.value = selectedPayment;
+            form.appendChild(paymentInput);
+            
+            checkFormValidity();
+          });
+        });
+
+        // Initial check
+        checkFormValidity();
+      });
+    </script>
     <!-- END: COMPLETE YOUR ROOM -->
 @endsection

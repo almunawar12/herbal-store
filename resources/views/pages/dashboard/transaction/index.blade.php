@@ -13,6 +13,7 @@
                 ajax: {
                     url: '{!! url()->current() !!}'
                 },
+                order: [[6, 'desc']], // Mengurutkan berdasarkan kolom Tanggal (kolom ke-7) secara descending
                 columns: [
                     { data: 'id', name: 'id', width: '5%'},
                     { data: 'name', name: 'name'},
@@ -20,6 +21,19 @@
                     { data: 'courier', name: 'courier'},
                     { data: 'total_price', name: 'total_price'},
                     { data: 'status', name: 'status'},
+                    { 
+                        data: 'created_date', 
+                        name: 'created_date', 
+                        width: '15%',
+                        render: function(data, type, row) {
+                            return `
+                                <div class="text-sm">
+                                    <div class="font-medium">${data}</div>
+                                    <div class="text-gray-500 text-xs">${row.created_time_ago}</div>
+                                </div>
+                            `;
+                        }
+                    },
                     {
                         data: 'action',
                         name: 'action',
@@ -57,6 +71,7 @@
                                 <th>Kurir</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
+                                <th>Tanggal</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>

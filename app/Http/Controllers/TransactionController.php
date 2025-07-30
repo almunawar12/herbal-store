@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Http\Requests\TransactionRequest;
 use App\Models\TransactionItem;
+use App\Utils\TimeZoneHelper;
+use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 
 class TransactionController extends Controller
@@ -18,7 +21,7 @@ class TransactionController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Transaction::query();
+            $query = Transaction::latest(); // Menampilkan data terbaru di atas
 
             return DataTables::of($query)
                 ->addcolumn('action', function ($item) {
@@ -33,9 +36,20 @@ class TransactionController extends Controller
                     </a>
                     ';
                 })
-
                 ->editcolumn('total_price', function ($item) {
-                    return number_format($item->total_price);
+                    return 'Rp ' . number_format($item->total_price, 0, ',', '.');
+                })
+                ->addcolumn('created_date', function ($item) {
+                    return TimeZoneHelper::formatJakarta($item->created_at);
+                })
+                ->addcolumn('updated_date', function ($item) {
+                    return TimeZoneHelper::formatJakarta($item->updated_at);
+                })
+                ->addcolumn('created_time_ago', function ($item) {
+                    return TimeZoneHelper::diffForHumans($item->created_at);
+                })
+                ->order(function ($query) {
+                    $query->orderBy('created_at', 'desc');
                 })
                 ->rawColumns(['action'])
                 ->make();
@@ -61,7 +75,19 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        // Set timestamps menggunakan zona waktu Jakarta
+        $data['created_at'] = TimeZoneHelper::now();
+        $data['updated_at'] = TimeZoneHelper::now();
+
+        $transaction = Transaction::create($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Transaction created successfully',
+            'data' => $transaction
+        ], 201);
     }
 
     /**
@@ -73,11 +99,21 @@ class TransactionController extends Controller
     public function show(Transaction $transaction)
     {
         if (request()->ajax()) {
-            $query = TransactionItem::with(['product'])->WHERE('transactions_id', $transaction->id);
+            $query = TransactionItem::with(['product'])->where('transactions_id', $transaction->id)->latest();
 
             return DataTables::of($query)
                 ->editcolumn('product.price', function ($item) {
-                    return number_format($item->product->price);
+                    return 'Rp ' . number_format($item->product->price, 0, ',', '.');
+                })
+                ->addcolumn('product_name', function ($item) {
+                    return $item->product ? $item->product->name : 'Produk tidak ditemukan';
+                })
+                ->addcolumn('subtotal', function ($item) {
+                    $subtotal = $item->product ? ($item->product->price * $item->quantity) : 0;
+                    return 'Rp ' . number_format($subtotal, 0, ',', '.');
+                })
+                ->order(function ($query) {
+                    $query->orderBy('created_at', 'desc');
                 })
                 ->rawColumns(['action'])
                 ->make();
@@ -108,6 +144,9 @@ class TransactionController extends Controller
     public function update(TransactionRequest $request, Transaction $transaction)
     {
         $data = $request->all();
+
+        // Set updated_at menggunakan zona waktu Jakarta
+        $data['updated_at'] = TimeZoneHelper::now();
 
         $transaction->update($data);
         return redirect()->route('dashboard.transaction.index');
