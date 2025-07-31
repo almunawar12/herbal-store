@@ -6,6 +6,7 @@ use App\Models\Transaction;
 use Illuminate\Support\Str;
 use App\Http\Requests\TransactionRequest;
 use App\Models\TransactionItem;
+use App\Utils\TimeZoneHelper;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -23,7 +24,7 @@ class MyTransactionController extends Controller
         }
 
         if (request()->ajax()) {
-            $query = Transaction::with(['user'])->where('users_id', Auth::user()->id);
+            $query = Transaction::with(['user'])->where('users_id', Auth::user()->id)->latest(); // Menampilkan data terbaru di atas
 
             return DataTables::of($query)
                 ->addColumn('action', function ($item) {
@@ -34,7 +35,19 @@ class MyTransactionController extends Controller
                         </a>';
                 })
                 ->editColumn('total_price', function ($item) {
-                    return number_format($item->total_price);
+                    return 'Rp ' . number_format($item->total_price, 0, ',', '.');
+                })
+                ->addColumn('created_date', function ($item) {
+                    return TimeZoneHelper::formatJakarta($item->created_at);
+                })
+                ->addColumn('created_time_ago', function ($item) {
+                    return TimeZoneHelper::diffForHumans($item->created_at);
+                })
+                ->addColumn('status', function ($item) {
+                    return $item->status;
+                })
+                ->order(function ($query) {
+                    $query->orderBy('created_at', 'desc');
                 })
                 ->rawColumns(['action'])
                 ->make();
@@ -72,12 +85,23 @@ class MyTransactionController extends Controller
      */
     public function show(Transaction $myTransaction)
     {
+        // Cek otorisasi - user hanya bisa melihat transaksi miliknya sendiri
+        if ($myTransaction->users_id !== Auth::user()->id) {
+            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        }
+
         if (request()->ajax()) {
-            $query = TransactionItem::with(['product'])->where('transactions_id', $myTransaction->id);
+            $query = TransactionItem::with(['product'])->where('transactions_id', $myTransaction->id)->latest();
 
             return DataTables::of($query)
                 ->editColumn('product.price', function ($item) {
-                    return number_format($item->product->price);
+                    return 'Rp ' . number_format($item->product->price, 0, ',', '.');
+                })
+                ->addColumn('product_name', function ($item) {
+                    return $item->product ? $item->product->name : 'Produk tidak ditemukan';
+                })
+                ->order(function ($query) {
+                    $query->orderBy('created_at', 'desc');
                 })
                 ->make();
         }
