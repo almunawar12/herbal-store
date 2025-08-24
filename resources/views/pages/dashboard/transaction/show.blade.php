@@ -17,6 +17,7 @@
                     { data: 'id', name: 'id', width: '5%'},
                     { data: 'product.name', name: 'product.name'},
                     { data: 'product.price', name: 'product.price'},
+                    { data: 'qty', name: 'qty'},
                 ]
             })
         </script>
@@ -83,6 +84,7 @@
                                 <th>ID</th>
                                 <th>Produk</th>
                                 <th>Harga</th>
+                                <th>Qty</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

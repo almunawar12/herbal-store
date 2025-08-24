@@ -78,6 +78,15 @@
                       >
                         IDR {{ number_format($item->product->price) }}
                       </h6>
+                      <div class="flex items-center mt-2">
+                        <button type="button" class="qty-btn bg-gray-200 px-2 rounded-l" data-action="decrement">-</button>
+                          <input type="number" name="qty[]" min="1" value="{{ $item->qty ?? 1 }}" class="qty-input w-12 text-center border border-gray-300" data-cart-id="{{ $item->id }}" data-price="{{ $item->product->price }}" />
+                        <button type="button" class="qty-btn bg-gray-200 px-2 rounded-r" data-action="increment">+</button>
+                        <input type="hidden" name="cart_id[]" value="{{ $item->id }}" />
+                        </div>
+                        <div class="mt-2 text-sm text-gray-700">
+                          Total: <span class="product-total" id="product-total-{{ $item->id }}">IDR {{ number_format(($item->qty ?? 1) * $item->product->price) }}</span>
+                      </div>
                     </div>
                   </div>
                   <div
@@ -105,6 +114,12 @@
                 <a href="{{ route('index') }}" class="underline">Shop Now</a>
               </p>
             @endforelse
+              <div class="flex justify-end mt-6">
+                <div class="bg-gray-100 rounded-xl p-4 w-full md:w-1/2 text-right">
+                  <span class="font-semibold">Total Keseluruhan: </span>
+                  <span class="text-xl font-bold" id="cart-grand-total">IDR 0</span>
+                </div>
+              </div>
             
             <!-- END: ROW 1 -->
 
@@ -113,6 +128,7 @@
             <div class="bg-gray-100 px-4 py-6 md:p-8 md:rounded-3xl">
               <form action="{{ route('checkout') }}" method="POST">
                 @csrf
+                <!-- Hidden input untuk qty dan cart_id akan diisi otomatis oleh JS saat submit -->
                 <div class="flex flex-start mb-6">
                   <h3 class="text-2xl">Shipping Details</h3>
                 </div>
@@ -295,6 +311,73 @@
 
     <script>
       document.addEventListener('DOMContentLoaded', function() {
+          // Qty plus minus logic
+          document.querySelectorAll('.qty-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              const input = this.parentElement.querySelector('.qty-input');
+              let value = parseInt(input.value);
+              if (this.dataset.action === 'increment') {
+                value++;
+              } else if (this.dataset.action === 'decrement' && value > 1) {
+                value--;
+              }
+              input.value = value;
+              updateProductTotal(input);
+              updateGrandTotal();
+            });
+          });
+
+          // Update total per product
+          function updateProductTotal(input) {
+            const price = parseInt(input.dataset.price);
+            const qty = parseInt(input.value);
+            const total = price * qty;
+            const id = input.dataset.cartId;
+            const totalEl = document.getElementById('product-total-' + id);
+            if (totalEl) {
+              totalEl.textContent = 'IDR ' + total.toLocaleString('id-ID');
+            }
+          }
+
+          // Update grand total
+          function updateGrandTotal() {
+            let grandTotal = 0;
+            document.querySelectorAll('.qty-input').forEach(function(input) {
+              const price = parseInt(input.dataset.price);
+              const qty = parseInt(input.value);
+              grandTotal += price * qty;
+            });
+            document.getElementById('cart-grand-total').textContent = 'IDR ' + grandTotal.toLocaleString('id-ID');
+          }
+
+          // Inisialisasi total saat load
+          document.querySelectorAll('.qty-input').forEach(function(input) {
+            updateProductTotal(input);
+          });
+          updateGrandTotal();
+
+          // Saat submit checkout, pastikan qty dan cart_id ikut terkirim
+          const checkoutForm = document.querySelector('form[action="{{ route('checkout') }}"]');
+          checkoutForm.addEventListener('submit', function(e) {
+            // Hapus input qty/cart_id lama jika ada
+            checkoutForm.querySelectorAll('input[name="qty[]"], input[name="cart_id[]"]').forEach(el => el.remove());
+            // Ambil semua qty input di cart
+            document.querySelectorAll('.qty-input').forEach(function(input) {
+              const qty = input.value;
+              const cartId = input.dataset.cartId;
+              // Buat input hidden baru
+              const qtyInput = document.createElement('input');
+              qtyInput.type = 'hidden';
+              qtyInput.name = 'qty[]';
+              qtyInput.value = qty;
+              checkoutForm.appendChild(qtyInput);
+              const idInput = document.createElement('input');
+              idInput.type = 'hidden';
+              idInput.name = 'cart_id[]';
+              idInput.value = cartId;
+              checkoutForm.appendChild(idInput);
+            });
+          });
         const checkoutBtn = document.getElementById('checkout-btn');
         const form = document.querySelector('form[action="{{ route('checkout') }}"]');
         const inputs = form.querySelectorAll('input[data-input]');

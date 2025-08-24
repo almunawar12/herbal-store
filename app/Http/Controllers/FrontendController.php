@@ -57,14 +57,27 @@ class FrontendController extends Controller
 
     public function checkout(CheckoutRequest $request)
     {
+
         $data = $request->all();
+
+        // Update qty di tabel carts sesuai input dari form
+        if (isset($data['cart_id']) && isset($data['qty'])) {
+            foreach ($data['cart_id'] as $idx => $cartId) {
+                $qty = isset($data['qty'][$idx]) ? (int)$data['qty'][$idx] : 1;
+                Cart::where('id', $cartId)
+                    ->where('users_id', Auth::user()->id)
+                    ->update(['qty' => $qty]);
+            }
+        }
 
         // Get Carts data
         $carts = Cart::with(['product'])->where('users_id', Auth::user()->id)->get();
 
         // Add to Transaction data
         $data['users_id'] = Auth::user()->id;
-        $data['total_price'] = $carts->sum('product.price');
+        $data['total_price'] = $carts->sum(function ($cart) {
+            return $cart->product->price * ($cart->qty ?? 1);
+        });
         $data['code'] = 'LX-' . time();
 
         // Create Transaction
@@ -79,6 +92,7 @@ class FrontendController extends Controller
                 'transactions_id' => $transaction->id,
                 'users_id' => $cart->users_id,
                 'products_id' => $cart->products_id,
+                'qty' => $cart->qty ?? 1,
             ]);
         }
 
