@@ -116,7 +116,7 @@
             @endforelse
               <div class="flex justify-end mt-6">
                 <div class="bg-gray-100 rounded-xl p-4 w-full md:w-1/2 text-right">
-                  <span class="font-semibold">Total Keseluruhan: </span>
+                  <span class="font-semibold">Total: </span>
                   <span class="text-xl font-bold" id="cart-grand-total">IDR 0</span>
                 </div>
               </div>
@@ -136,9 +136,8 @@
                 <div class="flex flex-col mb-4">
                   <label for="complete-name" class="text-sm mb-2"
                     >Complete Name
-                    @if(Auth::check())
-                      <span class="text-green-600 text-xs">(Auto-filled from your account)</span>
-                    @endif
+                    {{-- @if(Auth::check())
+                    @endif --}}
                   </label>
                   <input
                     data-input
@@ -154,9 +153,9 @@
 
                 <div class="flex flex-col mb-4">
                   <label for="email" class="text-sm mb-2">Email Address
-                    @if(Auth::check())
+                    {{-- @if(Auth::check())
                       <span class="text-green-600 text-xs">(Auto-filled from your account)</span>
-                    @endif
+                    @endif --}}
                   </label>
                   <input
                     data-input
@@ -204,13 +203,13 @@
                     <div class="px-2 w-6/12 h-24 mb-4">
                       <button
                         type="button"
-                        data-value="fedex"
+                        data-value="j&t"
                         data-name="courier"
                         class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
                       >
                         <img
-                          src="/frontend/images/content/logo-fedex.svg"
-                          alt="Logo Fedex"
+                          src="/frontend/images/content/jnt.png"
+                          alt="Logo J&T"
                           class="object-contain max-h-full"
                         />
                       </button>
@@ -218,13 +217,13 @@
                     <div class="px-2 w-6/12 h-24 mb-4">
                       <button
                         type="button"
-                        data-value="dhl"
+                        data-value="jne"
                         data-name="courier"
                         class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
                       >
                         <img
-                          src="/frontend/images/content/logo-dhl.svg"
-                          alt="Logo dhl"
+                          src="/frontend/images/content/jne.png"
+                          alt="Logo JNE"
                           class="object-contain max-h-full"
                         />
                       </button>
@@ -251,46 +250,6 @@
                         />
                       </button>
                     </div>
-                    {{-- <div class="px-2 w-6/12 h-24 mb-4">
-                      <button
-                        type="button"
-                        data-value="mastercard"
-                        data-name="payment"
-                        class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
-                      >
-                        <img
-                          src="/frontend/images/content/logo-mastercard.svg"
-                          alt="Logo mastercard"
-                        />
-                      </button>
-                    </div>
-                    <div class="px-2 w-6/12 h-24 mb-4">
-                      <button
-                        type="button"
-                        data-value="bitcoin"
-                        data-name="payment"
-                        class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
-                      >
-                        <img
-                          src="/frontend/images/content/logo-bitcoin.svg"
-                          alt="Logo bitcoin"
-                          class="object-contain max-h-full"
-                        />
-                      </button>
-                    </div>
-                    <div class="px-2 w-6/12 h-24 mb-4">
-                      <button
-                        type="button"
-                        data-value="american-express"
-                        data-name="payment"
-                        class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none"
-                      >
-                        <img
-                          src="/frontend/images/content/logo-american-express.svg"
-                          alt="Logo american-logo-american-express"
-                        />
-                      </button>
-                    </div> --}}
                   </div>
                 </div>
                 <div class="text-center">
