@@ -27,8 +27,21 @@ class CheckoutRequest extends FormRequest
         return [
             'name' => 'required',
             'email' => 'required|email',
-            'address' => 'required',
+            'address' => ['required', 'min:10', 'max:255'],
             'phone' => 'required',
+        ];
+    }
+
+    /**
+     * Get the custom error messages for the validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'address.required' => 'Alamat harus diisi lengkap',
+            'address.min' => 'Alamat harus diisi lengkap',
         ];
     }
 }

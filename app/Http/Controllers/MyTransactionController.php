@@ -53,7 +53,7 @@ class MyTransactionController extends Controller
                 ->make();
         }
 
-        return view('pages.dashboard.transaction.index');
+        return view('pages.dashboard.transaction.mytransaction');
     }
 
     /**

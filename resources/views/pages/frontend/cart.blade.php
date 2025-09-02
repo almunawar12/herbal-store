@@ -80,7 +80,7 @@
                       </h6>
                       <div class="flex items-center mt-2">
                         <button type="button" class="qty-btn bg-gray-200 px-2 rounded-l" data-action="decrement">-</button>
-                          <input type="number" name="qty[]" min="1" value="{{ $item->qty ?? 1 }}" class="qty-input w-12 text-center border border-gray-300" data-cart-id="{{ $item->id }}" data-price="{{ $item->product->price }}" />
+                          <input type="number" name="qty[]" min="1" value="{{ $item->qty ?? 1 }}" class="qty-input w-12 text-center border border-gray-300 bg-gray-50 cursor-not-allowed" data-cart-id="{{ $item->id }}" data-price="{{ $item->product->price }}" readonly />
                         <button type="button" class="qty-btn bg-gray-200 px-2 rounded-r" data-action="increment">+</button>
                         <input type="hidden" name="cart_id[]" value="{{ $item->id }}" />
                         </div>
@@ -171,6 +171,9 @@
 
                 <div class="flex flex-col mb-4">
                   <label for="address" class="text-sm mb-2">Address</label>
+                  @error('address')
+                    <span class="text-red-500 text-xs font-semibold mb-1">{{ $message }}</span>
+                  @enderror
                   <input
                     data-input
                     type="text"
