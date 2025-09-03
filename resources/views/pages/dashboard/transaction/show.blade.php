@@ -41,8 +41,13 @@
                                 <th class="border px-6 py-4">{{$transaction->email}}</th>
                             </tr>
                             <tr>
-                                <th class="border px-6 py-4 text-right">Address</th>
-                                <th class="border px-6 py-4">{{$transaction->address}}</th>
+                                <th class="border px-6 py-4 text-right">Alamat Lengkap</th>
+                                <th class="border px-6 py-4">
+                                    {{$transaction->address}}<br>
+                                    Kecamatan: {{$transaction->district}}<br>
+                                    Provinsi: {{$transaction->province}}<br>
+                                    Kode Pos: {{$transaction->postal_code}}
+                                </th>
                             </tr>
                             <tr>
                                 <th class="border px-6 py-4 text-right">Phone</th>

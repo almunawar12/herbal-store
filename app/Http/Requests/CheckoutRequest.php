@@ -27,7 +27,10 @@ class CheckoutRequest extends FormRequest
         return [
             'name' => 'required',
             'email' => 'required|email',
-            'address' => ['required', 'min:10', 'max:255'],
+            'address' => ['required', 'min:5', 'max:255'],
+            'district' => 'required',
+            'province' => 'required',
+            'postal_code' => 'required',
             'phone' => 'required',
         ];
     }
@@ -42,6 +45,9 @@ class CheckoutRequest extends FormRequest
         return [
             'address.required' => 'Alamat harus diisi lengkap',
             'address.min' => 'Alamat harus diisi lengkap',
+            'district.required' => 'Kecamatan harus diisi',
+            'province.required' => 'Provinsi harus diisi',
+            'postal_code.required' => 'Kode pos harus diisi',
         ];
     }
 }

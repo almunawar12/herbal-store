@@ -147,8 +147,9 @@
                   value="{{ Auth::check() ? Auth::user()->email : '' }}"
                 />
 
+
                 <div class="flex flex-col mb-4">
-                  <label for="address" class="text-sm mb-2">Address</label>
+                  <label for="address" class="text-sm mb-2">Alamat</label>
                   @error('address')
                     <span class="text-red-500 text-xs font-semibold mb-1">{{ $message }}</span>
                   @enderror
@@ -158,7 +159,52 @@
                     name="address"
                     id="address"
                     class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
-                    placeholder="Input your address"
+                    placeholder="Masukkan alamat lengkap"
+                  />
+                </div>
+
+                <div class="flex flex-col mb-4">
+                  <label for="district" class="text-sm mb-2">Kecamatan</label>
+                  @error('district')
+                    <span class="text-red-500 text-xs font-semibold mb-1">{{ $message }}</span>
+                  @enderror
+                  <input
+                    data-input
+                    type="text"
+                    name="district"
+                    id="district"
+                    class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
+                    placeholder="Masukkan kecamatan"
+                  />
+                </div>
+
+                <div class="flex flex-col mb-4">
+                  <label for="province" class="text-sm mb-2">Provinsi</label>
+                  @error('province')
+                    <span class="text-red-500 text-xs font-semibold mb-1">{{ $message }}</span>
+                  @enderror
+                  <input
+                    data-input
+                    type="text"
+                    name="province"
+                    id="province"
+                    class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
+                    placeholder="Masukkan provinsi"
+                  />
+                </div>
+
+                <div class="flex flex-col mb-4">
+                  <label for="postal_code" class="text-sm mb-2">Kode Pos</label>
+                  @error('postal_code')
+                    <span class="text-red-500 text-xs font-semibold mb-1">{{ $message }}</span>
+                  @enderror
+                  <input
+                    data-input
+                    type="text"
+                    name="postal_code"
+                    id="postal_code"
+                    class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
+                    placeholder="Masukkan kode pos"
                   />
                 </div>
 

@@ -60,6 +60,9 @@ class FrontendController extends Controller
 
         $data = $request->all();
 
+        // Gabungkan alamat lengkap untuk field address utama jika ingin, atau simpan terpisah
+        // $data['address'] = $data['address'] . ', ' . $data['district'] . ', ' . $data['province'] . ', ' . $data['postal_code'];
+
         // Update qty di tabel carts sesuai input dari form
         if (isset($data['cart_id']) && isset($data['qty'])) {
             foreach ($data['cart_id'] as $idx => $cartId) {
