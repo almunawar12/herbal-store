@@ -133,41 +133,19 @@
                   <h3 class="text-2xl">Shipping Details</h3>
                 </div>
 
-                <div class="flex flex-col mb-4">
-                  <label for="complete-name" class="text-sm mb-2"
-                    >Complete Name
-                    {{-- @if(Auth::check())
-                    @endif --}}
-                  </label>
-                  <input
-                    data-input
-                    name="name"
-                    type="text"
-                    id="complete-name"
-                    class="border-gray-200 border rounded-lg px-4 py-2 text-sm focus:border-blue-200 focus:outline-none {{ Auth::check() ? 'bg-gray-50 cursor-not-allowed' : 'bg-white' }}"
-                    placeholder="Input your name"
-                    value="{{ Auth::check() ? Auth::user()->name : '' }}"
-                    {{ Auth::check() ? 'readonly' : '' }}
-                  />
-                </div>
 
-                <div class="flex flex-col mb-4">
-                  <label for="email" class="text-sm mb-2">Email Address
-                    {{-- @if(Auth::check())
-                      <span class="text-green-600 text-xs">(Auto-filled from your account)</span>
-                    @endif --}}
-                  </label>
-                  <input
-                    data-input
-                    name="email"
-                    type="email"
-                    id="email"
-                    class="border-gray-200 border rounded-lg px-4 py-2 text-sm focus:border-blue-200 focus:outline-none {{ Auth::check() ? 'bg-gray-50 cursor-not-allowed' : 'bg-white' }}"
-                    placeholder="Input your email address"
-                    value="{{ Auth::check() ? Auth::user()->email : '' }}"
-                    {{ Auth::check() ? 'readonly' : '' }}
-                  />
-                </div>
+                <input
+                  type="hidden"
+                  name="name"
+                  value="{{ Auth::check() ? Auth::user()->name : '' }}"
+                />
+
+
+                <input
+                  type="hidden"
+                  name="email"
+                  value="{{ Auth::check() ? Auth::user()->email : '' }}"
+                />
 
                 <div class="flex flex-col mb-4">
                   <label for="address" class="text-sm mb-2">Address</label>

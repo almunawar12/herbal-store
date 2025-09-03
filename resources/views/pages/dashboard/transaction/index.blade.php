@@ -16,6 +16,7 @@
                 order: [[6, 'desc']], // Mengurutkan berdasarkan kolom Tanggal (kolom ke-7) secara descending
                 columns: [
                     { data: 'id', name: 'id', width: '5%'},
+                    { data: 'code', name: 'code'},
                     { data: 'name', name: 'name'},
                     { data: 'phone', name: 'phone'},
                     { data: 'courier', name: 'courier'},
@@ -66,6 +67,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>No. Transaksi</th>
                                 <th>Nama</th>
                                 <th>Telepone</th>
                                 <th>Kurir</th>

@@ -42,7 +42,8 @@
                             // Ganti nomor admin di bawah ini
                             var adminPhone = '+6281312931133';
                             var product = row.product_name ? row.product_name : '';
-                            var waMessage = `Halo Admin, saya ingin konfirmasi transaksi untuk produk: ${product}`;
+                            var code = row.code ? row.code : '';
+                            var waMessage = `Halo Admin, saya ingin konfirmasi transaksi untuk produk: ${product} dengan nomor transaksi: ${code}`;
                             var waUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(waMessage)}`;
                             return `
                                 <a href="${waUrl}" target="_blank" class="inline-flex items-center px-3 py-1 bg-green-500 text-white text-sm font-medium rounded hover:bg-green-600 mr-2">

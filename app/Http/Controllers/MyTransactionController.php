@@ -23,8 +23,9 @@ class MyTransactionController extends Controller
             abort(403, 'Admin tidak diperbolehkan mengakses transaksi pribadi.');
         }
 
+
         if (request()->ajax()) {
-            $query = Transaction::with(['user'])->where('users_id', Auth::user()->id)->latest(); // Menampilkan data terbaru di atas
+            $query = Transaction::with(['user', 'items.product'])->where('users_id', Auth::user()->id)->latest();
 
             return DataTables::of($query)
                 ->addColumn('action', function ($item) {
@@ -45,6 +46,13 @@ class MyTransactionController extends Controller
                 })
                 ->addColumn('status', function ($item) {
                     return $item->status;
+                })
+                ->addColumn('product_name', function ($item) {
+                    // Ambil nama produk pertama dari transaksi
+                    if ($item->items && count($item->items) > 0 && $item->items[0]->product) {
+                        return $item->items[0]->product->name;
+                    }
+                    return '-';
                 })
                 ->order(function ($query) {
                     $query->orderBy('created_at', 'desc');
